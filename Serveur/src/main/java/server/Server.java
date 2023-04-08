@@ -1,25 +1,53 @@
 package server;
 
 import javafx.util.Pair;
+import server.models.Course;
+import server.models.RegistrationForm;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Server {
-
+    /**
+     * Constante de classe Server de type string servant à spécifier la commande pour executer la méthode handleRegistraton()
+     */
     public final static String REGISTER_COMMAND = "INSCRIRE";
+    /**
+     * Constanste de la classe Server de type string servant à spécifer la commande pour handleLoadCourses(arg)
+     */
     public final static String LOAD_COMMAND = "CHARGER";
+    /**
+     * Variable de type ServerSocket servant à connecter le client au server dans la méthode run()
+     */
     private final ServerSocket server;
+    /**
+     * Variable de type Socket qui représente le client une fois connecté au server
+     */
     private Socket client;
+    /**
+     * Variable de type objectInputStream qui va prendre les requêtes du client pour les transférer au server
+     */
     private ObjectInputStream objectInputStream;
+    /**
+     * Variable de type objectOutputStream qui va transférer les output du server au client
+     */
     private ObjectOutputStream objectOutputStream;
+    /**
+     * à compléter
+     */
     private final ArrayList<EventHandler> handlers;
 
+    /**
+     * Ce constructeur initialise le serveur en ouvrant le port d'entrée spécifié en argument
+     * en permettant 1 client dans la file d'attente du serveur
+     * et créer la liste de 'EventHandlers' en lui ajoutant la méthode 'handleEvents()'.
+     *
+     * @param  port  un integer qui spécifie le port d'entrée pour se connecter au server
+     * @throws IOException  exception si l'ouverture du port de connexion du serveur échoue
+     */
     public Server(int port) throws IOException {
         this.server = new ServerSocket(port, 1);
         this.handlers = new ArrayList<EventHandler>();
@@ -35,6 +63,15 @@ public class Server {
             h.handle(cmd, arg);
         }
     }
+
+    /**
+     * Ce constructeur initialise le serveur en ouvrant le port d'entrée spécifie en argument
+     * et créer la liste de 'EventHandlers' en lui ajoutant la méthode 'handleEvents()'.
+     *
+     * @param  client  attente d'une connexion d'un client
+     * @throws Exception  si l'ouverture du port de connexion du serveur échoue
+     * @return
+     */
 
     public void run() {
         while (true) {
@@ -92,6 +129,27 @@ public class Server {
      */
     public void handleLoadCourses(String arg) {
         // TODO: implémenter cette méthode
+        ArrayList<Course> listeCours =new ArrayList<Course>();
+        try {
+            FileReader fileReader = new FileReader("src/main/java/server/data/cours.txt");
+            BufferedReader reader = new BufferedReader(fileReader);
+
+            String ligne;
+            while (( ligne = reader.readLine()) != null){
+                String[] infoCours = ligne.split("\t");
+
+                //filtre les cours par la session
+                if (arg.equals(infoCours[2])){
+                    Course cours = new Course(infoCours[1], infoCours[0],infoCours[2]);
+                    listeCours.add(cours);
+                }
+                objectOutputStream.writeObject(listeCours);
+                fileReader.close();
+                reader.close();
+            }
+        }catch(IOException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -101,6 +159,19 @@ public class Server {
      */
     public void handleRegistration() {
         // TODO: implémenter cette méthode
+        try{
+            // Récupérer objet
+            RegistrationForm registre = (RegistrationForm) objectInputStream.readObject();
+            // Création objet pour créer fichier texte
+            PrintWriter ecrireFichier = new PrintWriter("src/main/java/server/data/inscription.txt"); // à modf pour jar
+            //Chaque ligne va correspondre à un registerform et va écrire directement en string
+            ecrireFichier.println(registre.toString());
+            ecrireFichier.close();
+
+            objectOutputStream.writeUTF("Succès : Mission traitement du registre accomplie"); //
+        }catch(IOException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
 

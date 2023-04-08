@@ -9,6 +9,7 @@ public class ServerLauncher {
             server = new Server(PORT);
             System.out.println("Server is running...");
             server.run();
+            //server.handleLoadCourses("");
         } catch (Exception e) {
             e.printStackTrace();
         }
