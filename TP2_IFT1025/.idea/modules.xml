@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../Serveur/Server.iml" filepath="$PROJECT_DIR$/../Serveur/Server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TP2_IFT1025.iml" filepath="$PROJECT_DIR$/TP2_IFT1025.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../client_gui/client_gui.iml" filepath="$PROJECT_DIR$/../client_gui/client_gui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../client_simple/client_simple.iml" filepath="$PROJECT_DIR$/../client_simple/client_simple.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Serveur/src/main/main.iml" filepath="$PROJECT_DIR$/../Serveur/src/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Serveur/src/test/test.iml" filepath="$PROJECT_DIR$/../Serveur/src/test/test.iml" />
+    </modules>
+  </component>
+</project>

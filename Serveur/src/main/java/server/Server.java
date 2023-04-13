@@ -10,42 +10,46 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Classe qui représente un server qui écoute sur un port spécifique et qui va avoir des géreurs d'événements
+ * pour les actions prises par les clients quand ils se connectent. Cette classe va permettre aux clients
+ * de s'inscrire à des cours et les inscrire dans un registre selon la session.
+ */
 public class Server {
     /**
-     * Constante de classe Server de type string servant à spécifier la commande pour executer la méthode handleRegistraton()
+     * Variable qui va permettre à une commande d'inscrire les clients aux cours
      */
     public final static String REGISTER_COMMAND = "INSCRIRE";
     /**
-     * Constanste de la classe Server de type string servant à spécifer la commande pour handleLoadCourses(arg)
+     * variable utilisée pour télécharger les cours sélectionnés selon la session
      */
     public final static String LOAD_COMMAND = "CHARGER";
     /**
-     * Variable de type ServerSocket servant à connecter le client au server dans la méthode run()
+     * Socket servant à connecter le client au server
      */
     private final ServerSocket server;
     /**
-     * Variable de type Socket qui représente le client une fois connecté au server
-     */
+     * Socket qui représente la communication entre le client
+     * et le server une fois connecté  */
     private Socket client;
     /**
-     * Variable de type objectInputStream qui va prendre les requêtes du client pour les transférer au server
+     * object InputStream va lire les requêtes du client
      */
     private ObjectInputStream objectInputStream;
     /**
-     * Variable de type objectOutputStream qui va transférer les output du server au client
+     * Variable object OutputStream qui va transférer les output du server au client
      */
     private ObjectOutputStream objectOutputStream;
     /**
-     * à compléter
+     * liste de géreurs d'événements associés au server
      */
     private final ArrayList<EventHandler> handlers;
 
     /**
      * Ce constructeur initialise le serveur en ouvrant le port d'entrée spécifié en argument
-     * en permettant 1 client dans la file d'attente du serveur
-     * et créer la liste de 'EventHandlers' en lui ajoutant la méthode 'handleEvents()'.
+     * en prenant 1 client dans la file d'attente du serveur
      *
-     * @param  port  un integer qui spécifie le port d'entrée pour se connecter au server
+     * @param  port  port de connexion vers le server
      * @throws IOException  exception si l'ouverture du port de connexion du serveur échoue
      */
     public Server(int port) throws IOException {
@@ -54,9 +58,22 @@ public class Server {
         this.addEventHandler(this::handleEvents);
     }
 
+    /**
+     * Méthode pour rajouter un nouvel événements à liste de gestion d'événements
+     *
+     *  @param h le gestionnaire d'événement à ajouter
+     */
+
     public void addEventHandler(EventHandler h) {
         this.handlers.add(h);
     }
+
+    /**
+     *Méthode qui avertit tous les gestionnaires d'événements
+     *
+     * @param cmd commande à gérer
+     * @param arg argument d'entrée à gérer
+     */
 
     private void alertHandlers(String cmd, String arg) {
         for (EventHandler h : this.handlers) {
@@ -65,12 +82,10 @@ public class Server {
     }
 
     /**
-     * Ce constructeur initialise le serveur en ouvrant le port d'entrée spécifie en argument
-     * et créer la liste de 'EventHandlers' en lui ajoutant la méthode 'handleEvents()'.
+     * lance le programme serveur en ouvrant le port d'entrée spécifié en argument et
+     * attend pour de nouvelles connexions clients
+     * Une fois un client connecté, créer un nouvel objet pour gérer la connexion
      *
-     * @param  client  attente d'une connexion d'un client
-     * @throws Exception  si l'ouverture du port de connexion du serveur échoue
-     * @return
      */
 
     public void run() {
@@ -89,6 +104,11 @@ public class Server {
         }
     }
 
+    /**
+     * Écoute pour une requête client et la traite.
+     * @throws IOException si une erreur arrive lors de la lecture de la requête client
+     * @throws ClassNotFoundException  exception si la classe objet n'est pas trouvée
+     */
     public void listen() throws IOException, ClassNotFoundException {
         String line;
         if ((line = this.objectInputStream.readObject().toString()) != null) {
@@ -99,6 +119,11 @@ public class Server {
         }
     }
 
+    /**
+     * Traitement de la commande d'entrée et divise en commande et en argument
+     * @param line variable d'entrée du traitement
+     * @return une Paire d'objet contenant la commande et l'argument
+     */
     public Pair<String, String> processCommandLine(String line) {
         String[] parts = line.split(" ");
         String cmd = parts[0];
@@ -106,12 +131,24 @@ public class Server {
         return new Pair<>(cmd, args);
     }
 
+    /**
+     * Ferme les entrées et sorties de la connexion client-server
+     * Ferme la connexion client-server
+     * @throws IOException si une erreur survient lors de la déconnexion
+     */
+
     public void disconnect() throws IOException {
         objectOutputStream.close();
         objectInputStream.close();
         client.close();
     }
 
+    /**
+     * Gérer les événements selon la commande et les arguments rentrés
+     * lors de l'enregistrement ou du chargement
+     * @param cmd commande à exécuter
+     * @param arg arguments pour utiliser la commande
+     */
     public void handleEvents(String cmd, String arg) {
         if (cmd.equals(REGISTER_COMMAND)) {
             handleRegistration();
@@ -121,11 +158,11 @@ public class Server {
     }
 
     /**
-     Lire un fichier texte contenant des informations sur les cours et les transofmer en liste d'objets 'Course'.
-     La méthode filtre les cours par la session spécifiée en argument.
-     Ensuite, elle renvoie la liste des cours pour une session au client en utilisant l'objet 'objectOutputStream'.
-     La méthode gère les exceptions si une erreur se produit lors de la lecture du fichier ou de l'écriture de l'objet dans le flux.
-     @param arg la session pour laquelle on veut récupérer la liste des cours
+     * Méthode qui permet de télécharger les cours disponibles dans le fichier texte qui
+     * concorde à la session choisie
+     * Renvoie une liste de ces cours au client
+     *
+     * @param arg session pour y obtenir les cours disponibles
      */
     public void handleLoadCourses(String arg) {
         // TODO: implémenter cette méthode
@@ -140,35 +177,40 @@ public class Server {
 
                 //filtre les cours par la session
                 if (arg.equals(infoCours[2])){
+                    System.out.println(infoCours[0]);
+                    System.out.println(infoCours[1]);
+                    System.out.println(infoCours[2]);
                     Course cours = new Course(infoCours[1], infoCours[0],infoCours[2]);
                     listeCours.add(cours);
                 }
-                objectOutputStream.writeObject(listeCours);
-                fileReader.close();
-                reader.close();
             }
+            objectOutputStream.writeObject(listeCours);
+            fileReader.close();
+            reader.close();
         }catch(IOException e){
             System.out.println(e.getMessage());
         }
     }
 
     /**
-     Récupérer l'objet 'RegistrationForm' envoyé par le client en utilisant 'objectInputStream', l'enregistrer dans un fichier texte
-     et renvoyer un message de confirmation au client.
-     La méthode gére les exceptions si une erreur se produit lors de la lecture de l'objet, l'écriture dans un fichier ou dans le flux de sortie.
+     * Cette mtéhode inscrit un étudiant à un cours en écrivant leur enregistrement dans un fichier texte
+     *
+     * Renvoie des erreurs si lors de la lecture ou écriture du fichier ou que la classe n'est pas trouvée
      */
     public void handleRegistration() {
         // TODO: implémenter cette méthode
+
         try{
             // Récupérer objet
             RegistrationForm registre = (RegistrationForm) objectInputStream.readObject();
             // Création objet pour créer fichier texte
-            PrintWriter ecrireFichier = new PrintWriter("src/main/java/server/data/inscription.txt"); // à modf pour jar
+
+            PrintWriter ecrireFichier = new PrintWriter(new FileWriter("src/main/java/server/data/inscription.txt", true)); // à modf pour jar
             //Chaque ligne va correspondre à un registerform et va écrire directement en string
             ecrireFichier.println(registre.toString());
             ecrireFichier.close();
 
-            objectOutputStream.writeUTF("Succès : Mission traitement du registre accomplie"); //
+            objectOutputStream.writeObject("Succès : Inscription réussie de " + registre.getPrenom()+ " au cours " + registre.getCourse().getCode() + ""); //
         }catch(IOException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }

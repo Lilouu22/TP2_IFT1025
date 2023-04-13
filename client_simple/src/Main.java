@@ -1,6 +1,7 @@
 import javax.xml.transform.OutputKeys;
 import java.io.*;
 import java.net.Socket;
+
 import java.util.Scanner;
 
 /**
@@ -28,20 +29,23 @@ public class Main {
     /**
      * Constanste de la classe Server de type string servant à spécifer la commande pour handleLoadCourses(arg)
      */
+    static String essai = "essai";
     public final static String LOAD_COMMAND = "CHARGER";
     public static void main(String[] args)  {
         try{
 
             Socket clientSocket = new Socket("127.0.0.1",1337);
             System.out.println("Connexion Réussie!");
-            ObjectInputStream reader = new ObjectInputStream(clientSocket.getInputStream());
-            ObjectOutputStream writer = new ObjectOutputStream(clientSocket.getOutputStream());
-            writer.writeObject(LOAD_COMMAND);
-            writer.flush();
 
-            String line;
+            ObjectOutputStream writer = new ObjectOutputStream(clientSocket.getOutputStream());
+
+            writer.writeObject(LOAD_COMMAND);
+            System.out.println(essai);
+            writer.flush();
+            ObjectInputStream reader = new ObjectInputStream(clientSocket.getInputStream());
+            Course cours;
 // TODO: Reussir a lire ce que le serveur envoie!
-            while ((line = reader.readObject().toString()) != null) {
+            while ((cours = reader.readObject()) != null) {
                 System.out.println("Reçu : " + line);
             }
 
