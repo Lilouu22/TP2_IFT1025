@@ -1,7 +1,7 @@
 //VUE
 package com.client_gui;
 
-import com.client_gui.models.Course;
+import models.Course;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,7 +15,6 @@ import javafx.scene.text.*;
 import javafx.scene.control.Button;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class ClientApplication extends Application {
     private ClientControleur controleur;

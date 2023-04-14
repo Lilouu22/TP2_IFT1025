@@ -1,12 +1,13 @@
 package server;
 
 import javafx.util.Pair;
-import server.models.Course;
-import server.models.RegistrationForm;
+import models.Course;
+import models.RegistrationForm;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -166,9 +167,13 @@ public class Server {
      */
     public void handleLoadCourses(String arg) {
         // TODO: implémenter cette méthode
-        ArrayList<Course> listeCours =new ArrayList<Course>();
+        ArrayList<Course> listeCours =new ArrayList<>();
         try {
-            FileReader fileReader = new FileReader("src/main/java/server/data/cours.txt");
+            String cheminJar = getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            String cheminDossierJar = cheminJar.substring(1, cheminJar.lastIndexOf('/')+1);
+
+            System.out.println(cheminDossierJar);
+            FileReader fileReader = new FileReader(cheminDossierJar + "cours.txt");
             BufferedReader reader = new BufferedReader(fileReader);
 
             String ligne;
@@ -187,13 +192,13 @@ public class Server {
             objectOutputStream.writeObject(listeCours);
             fileReader.close();
             reader.close();
-        }catch(IOException e){
+        }catch(IOException | URISyntaxException e){
             System.out.println(e.getMessage());
         }
     }
 
     /**
-     * Cette mtéhode inscrit un étudiant à un cours en écrivant leur enregistrement dans un fichier texte
+     * Cette méthode inscrit un étudiant à un cours en écrivant leur enregistrement dans un fichier texte
      *
      * Renvoie des erreurs si lors de la lecture ou écriture du fichier ou que la classe n'est pas trouvée
      */
@@ -203,15 +208,16 @@ public class Server {
         try{
             // Récupérer objet
             RegistrationForm registre = (RegistrationForm) objectInputStream.readObject();
-            // Création objet pour créer fichier texte
-
-            PrintWriter ecrireFichier = new PrintWriter(new FileWriter("src/main/java/server/data/inscription.txt", true)); // à modf pour jar
+            // Création objet pour créer fichier text
+            String cheminJar = getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            String cheminDossierJar = cheminJar.substring(1, cheminJar.lastIndexOf('/')+1);
+            PrintWriter ecrireFichier = new PrintWriter(new FileWriter(cheminDossierJar + "inscription.txt", true)); // à modf pour jar
             //Chaque ligne va correspondre à un registerform et va écrire directement en string
             ecrireFichier.println(registre.toString());
             ecrireFichier.close();
 
             objectOutputStream.writeObject("Succès : Inscription réussie de " + registre.getPrenom()+ " au cours " + registre.getCourse().getCode() + ""); //
-        }catch(IOException | ClassNotFoundException e) {
+        }catch(IOException | ClassNotFoundException | URISyntaxException e) {
             System.out.println(e.getMessage());
         }
     }

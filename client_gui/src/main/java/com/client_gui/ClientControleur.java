@@ -1,7 +1,7 @@
 package com.client_gui;
 
-import com.client_gui.models.Course;
-import com.client_gui.models.RegistrationForm;
+import models.Course;
+import models.RegistrationForm;
 import javafx.scene.control.Alert;
 
 import java.io.IOException;
