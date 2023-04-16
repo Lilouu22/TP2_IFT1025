@@ -19,3 +19,6 @@ InscriptionForm{prenom='cqwebfuiqb', nom='wkrtgbk24b', email='wtbw', matricule='
 InscriptionForm{prenom='dwcev', nom='vevr', email='ve', matricule='123456', course='Course{name=Programmation2, code=IFT1025, session=Hiver}'}
 InscriptionForm{prenom='w', nom='t', email='1', matricule='123456', course='Course{name=Programmation2, code=IFT1025, session=Hiver}'}
 InscriptionForm{prenom='w', nom='t', email='wt', matricule='123456', course='Course{name=Programmation2, code=IFT1025, session=Hiver}'}
+InscriptionForm{prenom='Lisa ', nom='dewvh', email='lisa@udem.ca', matricule='123456', course='Course{name=Programmation2, code=IFT1025, session=Hiver}'}
+InscriptionForm{prenom='lisa', nom='v', email='lisav@udem.ca', matricule='123456', course='Course{name=Base_de_donnees, code=IFT2256, session=Ete}'}
+InscriptionForm{prenom='lisa', nom='v', email='lisav@udem.ca', matricule='123456', course='Course{name=Programmation1, code=IFT1015, session=Automne}'}

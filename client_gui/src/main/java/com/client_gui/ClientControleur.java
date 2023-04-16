@@ -12,25 +12,41 @@ import java.util.ArrayList;
 
 import static java.util.Objects.isNull;
 
-
+/**
+ * Cette classe représente la partie contrôleur de la méthode MVC
+ * d'une application client qui interagit avec un server.
+ * Elle fournit des méthodes pour permettre gérer les méthodes
+ * d'enregistrement et de chargements.
+ */
 
 public class ClientControleur {
+
     /**
-     * Constante de classe Server de type string servant à spécifier la commande pour executer la méthode handleRegistraton()
+     * attribut qui représente l'enregistrement au cours
      */
     public final static String REGISTER_COMMAND = "INSCRIRE";
     /**
-     * Constanste de la classe Server de type string servant à spécifer la commande pour handleLoadCourses(arg)
+     * attribut qui représente le chargement de cours
      */
-
     public final static String LOAD_COMMAND = "CHARGER";
 
     private ClientApplication vue;
+
+    /**
+     *  Construire un nouvel objet contrôleur du client
+     * @param vue la composante vue(graphique) de l'application
+     */
 
     public ClientControleur(ClientApplication vue) {
         this.vue = vue;
     }
 
+    /**
+     * Envoie une requête au server pour télécharger la liste des cours pour la session choisie
+     * @param session session pour laquelle les cours disposnibles vont être télécharger
+     * @throws IOException erreur pendant réception ou envoie de données
+     * @throws ClassNotFoundException erreur si la classe sérialisée n'est pas trouvée
+     */
 
 
     public void runLoadCommand(String session) throws IOException, ClassNotFoundException {
@@ -57,6 +73,12 @@ public class ClientControleur {
 
         }
     }
+
+    /**
+     *  Envoie une requête d'enregistrement au server
+     * @throws IOException si erreur réception/envoie de données
+     * @throws ClassNotFoundException si classe sérialisée non trouvée
+     */
 
     public void runRegisterCommand() throws IOException, ClassNotFoundException {
 
@@ -110,18 +132,32 @@ public class ClientControleur {
         clearInputFields();
     }
 
+    /**
+     * Méthode pour montrer dans la vue une erreur
+     * @param message envoie message d'erreur à l'utilisateur
+     */
+
     public void showErrorAlert(String message){
         Alert alert = vue.getAlerte();
         alert.setAlertType(Alert.AlertType.ERROR);
         alert.setContentText(message);
         alert.show();
     }
+
+    /**
+     * Méthode pour montrer graphiquement le type d'erreur
+     * @param message information sur erreur
+     */
     public void showSuccessAlert(String message){
         Alert alert = vue.getAlerte();
         alert.setAlertType(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
         alert.show();
     }
+
+    /**
+     * Méthode pour vider les champs de réponse des utilisateurs
+     */
 
     public void clearInputFields(){
         vue.getTextField1().clear();
